@@ -249,3 +249,11 @@ all_tweets <- VectorSource(all_tweets)
 all_corpus <- VCorpus(all_tweets)
 length(all_corpus)  
 
+# Clean the corpus
+all_clean <- clean_corpus(all_corpus)
+# Create all_tdm
+all_tdm <- TermDocumentMatrix(all_clean)
+# Create all_m
+all_m <- as.matrix(all_tdm)
+# Print a commonality cloud
+commonality.cloud(all_m, colors = "steelblue1", max.words = 100)
