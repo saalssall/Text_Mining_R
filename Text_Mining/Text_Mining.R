@@ -287,9 +287,9 @@ top25_df <- all_tdm_m %>%
   arrange(desc(difference))
 
 pyramid.plot(
-  # Chardonnay counts
+  # tech counts
   top25_df$tech, 
-  # Coffee counts
+  # iphone counts
   top25_df$iphone, 
   # Words
   labels = top25_df$word, 
