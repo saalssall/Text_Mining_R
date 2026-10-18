@@ -228,3 +228,24 @@ color_pal <- cividis(5)
 color_pal
 # Create a word cloud with the selected palette
 wordcloud(term_frequency$term, term_frequency$num, max.words = 100, colors = color_pal)
+
+# Check the label column and the exact group names (names(tweet_data) shows the columns)
+label_col <- "is_there_an_emotion_directed_at_a_brand_or_product"
+table(tweet_data[[label_col]])
+
+# Two groups to compare 
+positive_tweets <- tweet_data[which(tweet_data[[label_col]] == "Positive emotion"), ]
+negative_tweets <- tweet_data[which(tweet_data[[label_col]] == "Negative emotion"), ]
+
+# Create all_positive
+all_positive <- paste(positive_tweets$tweet_text, collapse = " ")
+# Create all_negative
+all_negative <- paste(negative_tweets$tweet_text, collapse = " ")
+# Create all_tweets: a vector of two long strings
+all_tweets <- c(all_positive, all_negative)
+# Convert to a vector source
+all_tweets <- VectorSource(all_tweets)
+# Create all_corpus
+all_corpus <- VCorpus(all_tweets)
+length(all_corpus)  
+
