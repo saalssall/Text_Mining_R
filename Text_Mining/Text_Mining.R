@@ -4,6 +4,9 @@ library(qdap)
 library(tm)
 # Load wordcloud package
 library(wordcloud)
+library(tidyverse)
+install.packages("plotrix")  # run once
+library(plotrix)
 
 text <- "Text mining, text data mining (TDM) or text analytics is the process of deriving high-quality information from text. It involves 'the discovery by computer of new, previously unknown information, by automatically extracting information from different written resources.'[1] Written resources may include websites, books, emails, reviews, and articles.[2] High-quality information is typically obtained by devising patterns and trends by means such as statistical pattern learning. According to Hotho et al. (2005), there are three perspectives of text mining: information extraction, data mining, and knowledge discovery in databases (KDD).[3] Text mining usually involves the process of structuring the input text (usually parsing, along with the addition of some derived linguistic features and the removal of others, and subsequent insertion into a database), deriving patterns within the structured data, and finally evaluation and interpretation of the output. 'High quality' in text mining usually refers to some combination of relevance, novelty, and interest. Typical text mining tasks include text categorization, text clustering, concept/entity extraction, production of granular taxonomies, sentiment analysis, document summarization, and entity relation modeling (i.e., learning relations between named entities)."
 # Print new_text to the console
@@ -257,3 +260,42 @@ all_tdm <- TermDocumentMatrix(all_clean)
 all_m <- as.matrix(all_tdm)
 # Print a commonality cloud
 commonality.cloud(all_m, colors = "steelblue1", max.words = 100)
+
+# Clean the corpus
+all_clean <- clean_corpus(all_corpus)
+# Create all_tdm
+all_tdm <- TermDocumentMatrix(all_clean)
+# Give the columns distinct names
+colnames(all_tdm) <- c("coffee", "chardonnay")
+# Create all_m
+all_m <- as.matrix(all_tdm)
+# Create comparison cloud
+comparison.cloud(all_m, colors = c("orange", "blue"), max.words = 50)
+
+# Create all_tdm_m: rows = words, columns = groups
+all_tdm_m <- as.matrix(all_tdm)
+
+top25_df <- all_tdm_m %>%
+  # Convert to data frame
+  as_tibble(rownames = "word") %>% 
+  # Keep rows where word appears everywhere
+  filter(if_all(everything(), ~. > 0)) %>% 
+  # Get difference in counts
+  mutate(difference = chardonnay - coffee) %>% 
+  # Keep rows with biggest difference
+  slice_max(difference,  n = 25) %>% 
+  # Arrange by descending difference
+  arrange(desc(difference))
+
+pyramid.plot(
+  # Chardonnay counts
+  top25_df$chardonnay, 
+  # Coffee counts
+  top25_df$coffee, 
+  # Words
+  labels = top25_df$word, 
+  top.labels = c("Chardonnay", "Words", "Coffee"), 
+  main = "Words in Common", 
+  unit = NULL,
+  gap = 8,
+)
