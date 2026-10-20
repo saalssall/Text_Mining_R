@@ -306,13 +306,23 @@ word_associate(tweet_data$tweet_text, match.string = "barista",
 # Add title
 title(main = "Barista Tech Tweet Associations")
 
-# Drop terms that are only digits
-tweet_m2 <- tweet_m[!grepl("^[0-9]+$", rownames(tweet_m)), ]
-dim(tweet_m2)
 
-# Keep the 50 most frequent remaining words
-word_totals <- sort(rowSums(tweet_m2), decreasing = TRUE)
-m_top <- tweet_m2[names(word_totals)[1:50], ] # Only top 50 terms
+# Print the dimensions of tweet_tdm
+dim(tweet_tdm)
+
+# Create tdm1 and tdm2
+tdm1 <- removeSparseTerms(tweet_tdm, sparse = 0.95)
+tdm2 <- removeSparseTerms(tweet_tdm, sparse = 0.975)
+print(tdm1)
+print(tdm2)
+
+# Choose one to cluster, convert it to a matrix (it's small now)
+tdm_m <- as.matrix(tdm2)            
+nrow(tdm_m)                         # how many words there are
+
+# Keep the most frequent words (up to 50)
+word_totals <- sort(rowSums(tdm_m), decreasing = TRUE)
+m_top <- tdm_m[names(head(word_totals, 50)), ]
 
 # Cluster
 dist_words <- dist(m_top)
