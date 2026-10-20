@@ -305,3 +305,16 @@ word_associate(tweet_data$tweet_text, match.string = "barista",
                network.plot = TRUE, cloud.colors = c("gray85", "darkred"))
 # Add title
 title(main = "Barista Tech Tweet Associations")
+
+# Drop terms that are only digits
+tweet_m2 <- tweet_m[!grepl("^[0-9]+$", rownames(tweet_m)), ]
+dim(tweet_m2)
+
+# Keep the 50 most frequent remaining words
+word_totals <- sort(rowSums(tweet_m2), decreasing = TRUE)
+m_top <- tweet_m2[names(word_totals)[1:50], ] # Only top 50 terms
+
+# Cluster
+dist_words <- dist(m_top)
+hc <- hclust(dist_words)
+plot(hc, main = "Word clusters in tweets", xlab = "", sub = "")
