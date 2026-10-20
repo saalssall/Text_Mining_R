@@ -328,3 +328,14 @@ m_top <- tdm_m[names(head(word_totals, 50)), ]
 dist_words <- dist(m_top)
 hc <- hclust(dist_words)
 plot(hc, main = "Word clusters in tweets", xlab = "", sub = "")
+
+# Create tweets_tdm2
+tweets_tdm2 <- removeSparseTerms(tweet_tdm, sparse = 0.975)
+# Create tdm_m
+tdm_m <- as.matrix(tweets_tdm2)
+# Create tweets_dist
+tweets_dist <- dist(tdm_m)
+# Create hc
+hc <- hclust(tweets_dist)
+# Plot the dendrogram
+plot(hc)
