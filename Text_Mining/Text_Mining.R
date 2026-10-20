@@ -298,3 +298,10 @@ pyramid.plot(
   unit = NULL,
   gap = 8,
 )
+
+# Word association
+word_associate(tweet_data$tweet_text, match.string = "barista", 
+               stopwords = c(Top200Words, "tech", "amp"), 
+               network.plot = TRUE, cloud.colors = c("gray85", "darkred"))
+# Add title
+title(main = "Barista Tech Tweet Associations")
