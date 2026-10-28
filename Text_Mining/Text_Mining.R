@@ -380,6 +380,16 @@ bigram_dtm <- DocumentTermMatrix(
 
 # Print unigram_dtm
 print(unigram_dtm)
-
 # Print bigram_dtm
 print(bigram_dtm)
+
+# Create bigram_dtm_m
+bigram_dtm_m <- as.matrix(bigram_dtm)
+# Create word frequencies
+freq <- colSums(bigram_dtm_m)
+# Create bi_words by extracting the character vector of word combinations
+bi_words <- names(freq)
+# Examine part of bi_words starting with 'ipad'
+str_subset(bi_words, "^ipad")
+# Plot a word cloud
+wordcloud(bi_words, freq, max.word = 15)
