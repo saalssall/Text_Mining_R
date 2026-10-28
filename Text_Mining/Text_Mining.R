@@ -398,8 +398,15 @@ str_subset(bi_words, "^ipad")
 # Plot a word cloud
 wordcloud(bi_words, freq, max.word = 15)
 
-# Edit the controls to use Tfidf weighting
+# Create a TDM
 tdm <- TermDocumentMatrix(clean_corp)
+# Convert to matrix again
+tdm_m <- as.matrix(tdm)
+# Examine part of the matrix
+tdm_m[c("ipad", "google", "social"), 24:35]
+
+# Edit the controls to use Tfidf weighting
+tdm <- TermDocumentMatrix(clean_corp, control = list(weighting = weightTfIdf))
 # Convert to matrix again
 tdm_m <- as.matrix(tdm)
 # Examine the same part: how has it changed?
