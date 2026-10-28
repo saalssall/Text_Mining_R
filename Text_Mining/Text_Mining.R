@@ -1,6 +1,7 @@
-
+# Install the required packages
 install.packages(c("qdap", "tm", "wordcloud", "tidyverse", 
                    "plotrix", "dendextend", "ggthemes", "RWeka"))
+# Load the above packages
 library(qdap)
 library(tm)
 library(wordcloud)
@@ -411,3 +412,15 @@ tdm <- TermDocumentMatrix(clean_corp, control = list(weighting = weightTfIdf))
 tdm_m <- as.matrix(tdm)
 # Examine the same part: how has it changed?
 tdm_m[c("ipad", "google", "social"), 24:35]
+
+# Rename columns
+names(tweets_df)[1:2] <- c("doc_id", "text")
+# Set the schema
+docs <- DataframeSource(tweets_df)
+# Make a clean volatile corpus: text_corpus
+text_corpus <- clean_corpus(VCorpus(docs))
+# Examine the first doc content
+content(text_corpus[[1]])
+# Access the first doc metadata
+meta(text_corpus[[1]])
+
