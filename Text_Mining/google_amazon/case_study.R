@@ -39,9 +39,17 @@ tm_clean <- function(corpus){
   return(corpus)
 }
 
+# 1. Cleaning the amazon dataset by applying the cleaning functions
 # qdap_clean the text
 qdap_cleaned_amzn_pros <- qdap_clean(amzn_pros)
 # Source and create the corpus
 amzn_p_corp <- VCorpus(VectorSource(qdap_cleaned_amzn_pros))
 # tm_clean the corpus
 amzn_pros_corp <- tm_clean(amzn_p_corp)
+
+# qdap_clean the text
+qdap_cleaned_amzn_cons <- qdap_clean(amzn_cons)
+# Source and create the corpus
+amzn_c_corp <- VCorpus(VectorSource(qdap_cleaned_amzn_cons))
+# tm_clean the corpus
+amzn_cons_corp <- tm_clean(amzn_c_corp)
