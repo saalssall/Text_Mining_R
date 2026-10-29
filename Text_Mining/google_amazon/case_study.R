@@ -53,3 +53,19 @@ qdap_cleaned_amzn_cons <- qdap_clean(amzn_cons)
 amzn_c_corp <- VCorpus(VectorSource(qdap_cleaned_amzn_cons))
 # tm_clean the corpus
 amzn_cons_corp <- tm_clean(amzn_c_corp)
+
+# 2. Cleaning the google dataset by applying the cleaning functions
+
+# qdap_clean the text
+qdap_cleaned_goog_pros <- qdap_clean(goog_pros)
+# Source and create the corpus
+goog_p_corp <-VCorpus(VectorSource(qdap_cleaned_goog_pros))
+# tm_clean the corpus
+goog_pros_corp <- tm_clean(goog_p_corp)
+
+# qdap clean the text
+qdap_cleaned_goog_cons <- qdap_clean(goog_cons)
+# Source and create the corpus
+goog_c_corp <- VCorpus(VectorSource(qdap_cleaned_goog_cons))
+# tm clean the corpus
+goog_cons_corp <- tm_clean(goog_c_corp)
