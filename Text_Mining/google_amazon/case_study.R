@@ -121,4 +121,19 @@ hc <- hclust(dist(amzn_c_tdm2),
 # Produce a plot of hc
 plot(hc)
 
+# Create amzn_p_tdm
+amzn_p_tdm <- TermDocumentMatrix(
+  amzn_pros_corp,
+  control = list(tokenize = tokenizer)
+)
 
+# Create amzn_p_m
+amzn_p_m <- as.matrix(amzn_p_tdm)
+# Create amzn_p_freq
+amzn_p_freq <- rowSums(amzn_p_m)
+# Create term_frequency
+term_frequency <- sort(amzn_p_freq, decreasing = TRUE)
+# Print the 5 most common terms
+print(term_frequency[1:5])
+# Find associations with fast-paced
+findAssocs(amzn_p_tdm, "fast paced", 0.2)
