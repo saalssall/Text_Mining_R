@@ -105,4 +105,20 @@ amzn_c_freq <- rowSums(amzn_c_tdm_m)
 # Plot a word cloud of negative Amazon bigrams
 wordcloud(words = names(amzn_c_freq), freq = amzn_c_freq, max.words = 25, color = "red")
 
+# Create amzn_c_tdm
+amzn_c_tdm <- TermDocumentMatrix(
+  amzn_cons_corp,
+  control = list(tokenize = tokenizer)
+)
+
+# Print amzn_c_tdm to the console
+print(amzn_c_tdm)
+# Create amzn_c_tdm2 by removing sparse terms 
+amzn_c_tdm2 <- removeSparseTerms(amzn_c_tdm, sparse = 0.993)
+# Create hc as a cluster of distance values
+hc <- hclust(dist(amzn_c_tdm2),
+             method = "complete")
+# Produce a plot of hc
+plot(hc)
+
 
