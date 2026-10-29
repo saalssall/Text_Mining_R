@@ -4,6 +4,7 @@ library(qdap)
 library(tm)
 library(RWeka)
 library(wordcloud)
+library(tidyverse)
 amzn <- read_csv("Datasets/amazon_reviews.csv")
 goog <- read_csv("Datasets/google_glassdoor_reviews.csv")
 
@@ -137,3 +138,15 @@ term_frequency <- sort(amzn_p_freq, decreasing = TRUE)
 print(term_frequency[1:5])
 # Find associations with fast-paced
 findAssocs(amzn_p_tdm, "fast paced", 0.2)
+
+# Create all_goog_corp
+all_goog_corp <- tm_clean(goog)
+# Create all_tdm
+all_tdm <- TermDocumentMatrix(all_goog_corp)
+# Create all_m
+all_m <- as.matrix(all_tdm)
+# Build a comparison cloud
+comparison.cloud(all_m, 
+                 max.words = 100, 
+                 colors = c("#F44336", "#2196f3"))
+
