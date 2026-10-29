@@ -2,6 +2,8 @@
 # 2. Identifying the text sources:
 library(qdap)
 library(tm)
+library(RWeka)
+library(wordcloud)
 amzn <- read_csv("Datasets/amazon_reviews.csv")
 goog <- read_csv("Datasets/google_glassdoor_reviews.csv")
 
@@ -25,7 +27,8 @@ qdap_clean <- function(x){
   x <- replace_contraction(x)  
   x <- replace_number(x)  
   x <- replace_ordinal(x)  
-  x <- replace_symbol(x)  
+  x <- replace_symbol(x) 
+  x <- na.omit(x)
   x <- tolower(x)
     return(x)
 }
@@ -37,6 +40,11 @@ tm_clean <- function(corpus){
   corpus <- tm_map(corpus, removeWords, 
                    c(stopwords("en"), "Google", "Amazon", "company"))
   return(corpus)
+}
+
+# a tokenizer function
+tokenizer <- function(x) {
+  NGramTokenizer(x, Weka_control(min = 2, max = 2))
 }
 
 # 1. Cleaning the amazon dataset by applying the cleaning functions
@@ -69,3 +77,32 @@ qdap_cleaned_goog_cons <- qdap_clean(goog_cons)
 goog_c_corp <- VCorpus(VectorSource(qdap_cleaned_goog_cons))
 # tm clean the corpus
 goog_cons_corp <- tm_clean(goog_c_corp)
+
+# 3. Feature extraction and Analysis 
+# Create amzn_p_tdm
+amzn_p_tdm <- TermDocumentMatrix(
+  amzn_pros_corp,
+  control = list(tokenize = tokenizer)
+)
+
+# Create amzn_p_tdm_m
+amzn_p_tdm_m <- as.matrix(amzn_p_tdm)
+# Create amzn_p_freq
+amzn_p_freq <- rowSums(amzn_p_tdm_m)
+# Plot a word cloud using amzn_p_freq values
+wordcloud(words = names(amzn_p_freq), freq = amzn_p_freq, max.words = 25, color = "blue" )
+
+# Create amzn_c_tdm
+amzn_c_tdm <- TermDocumentMatrix(
+  amzn_cons_corp,
+  control = list(tokenize = tokenizer)
+)
+
+# Create amzn_c_tdm_m
+amzn_c_tdm_m <- as.matrix(amzn_c_tdm)
+# Create amzn_c_freq
+amzn_c_freq <- rowSums(amzn_c_tdm_m)
+# Plot a word cloud of negative Amazon bigrams
+wordcloud(words = names(amzn_c_freq), freq = amzn_c_freq, max.words = 25, color = "red")
+
+
