@@ -4,7 +4,10 @@ library(qdap)
 library(tm)
 library(RWeka)
 library(wordcloud)
+library(plotrix)
 library(tidyverse)
+
+#Disclaimer: these datasets are not real
 amzn <- read_csv("Datasets/amazon_reviews.csv")
 goog <- read_csv("Datasets/google_glassdoor_reviews.csv")
 
@@ -150,3 +153,45 @@ comparison.cloud(all_m,
                  max.words = 100, 
                  colors = c("#F44336", "#2196f3"))
 
+
+# all_tdm: TermDocumentMatrix with one column per company (pros only)
+colnames(all_tdm) <- c("AmazonPro", "GooglePro")
+all_tdm_m  <- as.matrix(all_tdm)
+all_tdm_df <- as_tibble(all_tdm_m, rownames = "terms")
+
+# Filter to words in common and create an absolute diff column
+common_words <- all_tdm_df %>%
+  filter(AmazonPro != 0, GooglePro != 0) %>%
+  mutate(diff = abs(AmazonPro - GooglePro))
+
+# Extract top 5 common terms
+(top5_df <- common_words %>% slice_max(diff, n = 5))
+
+# Create the pyramid plot
+pyramid.plot(top5_df$AmazonPro, top5_df$GooglePro,
+             labels = top5_df$terms, gap = 200,
+             top.labels = c("Amzn", "Pro Words", "Goog"),
+             main = "Words in Common", unit = NULL)
+
+# all_tdm: TermDocumentMatrix of the cons text, one column per company
+colnames(all_tdm) <- c("AmazonNeg", "GoogleNeg")
+all_tdm_df <- as_tibble(as.matrix(all_tdm), rownames = "terms")
+
+# Filter to words in common and create an absolute diff column
+common_words <- all_tdm_df %>%
+  filter(AmazonNeg != 0, GoogleNeg != 0) %>%
+  mutate(diff = abs(AmazonNeg - GoogleNeg))
+
+# Extract top 5 common bigrams
+(top5_df <- common_words %>% slice_max(diff, n = 5))
+
+# Create a pyramid plot
+pyramid.plot(
+  top5_df$AmazonNeg,      # Amazon on the left
+  top5_df$GoogleNeg,      # Google on the right
+  labels = top5_df$terms, # Use terms for labels
+  gap = 200,
+  top.labels = c("Amzn", "Neg Words", "Goog"),
+  main = "Words in Common",
+  unit = NULL
+)
